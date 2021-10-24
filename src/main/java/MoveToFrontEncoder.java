@@ -7,13 +7,13 @@ public class MoveToFrontEncoder {
         }
     }
 
-    public char encode(char in) {
-        char oldCode = letters[in];
-        letters[in] = 0; //new code, put to front
-        for (char i = 0; i < 256; i++) {
-            //move the ones that were before 'in' to the right
-            if (letters[i] < oldCode && i != in)  letters[i]++;
+    public char encode(char theLetter) {
+        char code = letters[theLetter];
+        letters[theLetter] = 0; //new code, put to front
+        for (char letter = 0; letter < 256; letter++) {
+            //move letters that were before 'theLetter' to the right
+            if (letters[letter] < code && letter != theLetter)  letters[letter]++;
         }
-        return oldCode;
+        return code;
     }
 }
