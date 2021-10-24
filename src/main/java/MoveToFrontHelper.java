@@ -10,8 +10,9 @@ public class MoveToFrontHelper {
     public char encode(char in) {
         char oldCode = letters[in];
         letters[in] = 0; //new code, put to front
-        for (char i = 0; i < oldCode; i++) {
-            letters[i]++; //move the ones that were before 'in' to the right
+        for (char i = 0; i < 256; i++) {
+            //move the ones that were before 'in' to the right
+            if (letters[i] < oldCode && i != in)  letters[i]++;
         }
         return oldCode;
     }

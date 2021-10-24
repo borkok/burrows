@@ -4,6 +4,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,11 +13,10 @@ class MoveToFrontHelperTest {
     private static Stream<Arguments> params() {
         return Stream.of(
                 Arguments.of("A", new Character[]{0x41}),
-                Arguments.of("AA", new Character[]{0x41, 0x00})
-/*                Arguments.of("ABRACADABRA!", new Character[]{
+                Arguments.of("AA", new Character[]{0x41, 0x00}),
+                Arguments.of("ABRACADABRA!", new Character[]{
                         0x41, 0x42, 0x52, 0x02, 0x44, 0x01, 0x45, 0x01, 0x04, 0x04, 0x02, 0x26
-                })*/
-                
+                })
         );
     }
 
@@ -24,13 +24,26 @@ class MoveToFrontHelperTest {
     @MethodSource("params")
     public void test(String input, Character[] expected) {
         MoveToFrontHelper testee = new MoveToFrontHelper();
-        LinkedList<Character> result = new LinkedList<>();
-
+        StringBuilder result = new StringBuilder();
         for (char c : input.toCharArray()) {
-            result.add(testee.encode(c));
+            result.append(testee.encode(c));
         }
 
-        assertThat(result).hasSize(input.length())
-                .containsExactlyElementsOf(Arrays.asList(expected));
+        String expectedByteString = makeByteString(expected);
+        String actualByteString = makeByteString(result.toString());
+        assertThat(actualByteString)
+                .isEqualTo(expectedByteString);
+    }
+
+    private String makeByteString(Character[] result) {
+        return Arrays.stream(result)
+                .map(c -> Integer.toHexString((int) c))
+                .collect(Collectors.joining(", "));
+    }
+
+    private String makeByteString(String result) {
+        return result.chars()
+                .mapToObj(Integer::toHexString)
+                .collect(Collectors.joining(", "));
     }
 }
