@@ -1,7 +1,7 @@
-public class MoveToFrontHelper {
+public class MoveToFrontEncoder {
     private final char[] letters = new char[256];
 
-    public MoveToFrontHelper() {
+    public MoveToFrontEncoder() {
         for (char i = 0; i < 256; i++) {
             letters[i] = i;
         }

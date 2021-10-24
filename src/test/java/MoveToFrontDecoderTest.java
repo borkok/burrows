@@ -3,29 +3,30 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MoveToFrontHelperTest {
-    private static Stream<Arguments> params() {
+class MoveToFrontDecoderTest {
+    private static Stream<Arguments> paramsDe() {
         return Stream.of(
-                Arguments.of("A", new Character[]{0x41}),
-                Arguments.of("AA", new Character[]{0x41, 0x00}),
-                Arguments.of("ABRACADABRA!", new Character[]{
+                Arguments.of(new Character[]{0x41}, "A")
+/*
+                ,Arguments.of(new Character[]{0x41, 0x00}, "AA")
+                ,Arguments.of(new Character[]{
                         0x41, 0x42, 0x52, 0x02, 0x44, 0x01, 0x45, 0x01, 0x04, 0x04, 0x02, 0x26
-                })
+                }, "ABRACADABRA!")
+*/
         );
     }
 
     @ParameterizedTest
-    @MethodSource("params")
-    public void test(String input, Character[] expected) {
-        MoveToFrontHelper testee = new MoveToFrontHelper();
+    @MethodSource("paramsDe")
+    public void decode(Character[] input, String expected) {
+        MoveToFrontEncoder testee = new MoveToFrontEncoder();
         StringBuilder result = new StringBuilder();
-        for (char c : input.toCharArray()) {
+        for (char c : input) {
             result.append(testee.encode(c));
         }
 
