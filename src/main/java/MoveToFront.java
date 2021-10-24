@@ -12,12 +12,27 @@ to n + R (or better) in the worst case.
  */
 public class MoveToFront {
     // apply move-to-front encoding, reading from standard input and writing to standard output
-    public static void encode() {}
+    public static void encode() {
+        MoveToFrontEncoder encoder = new MoveToFrontEncoder();
+        while(!BinaryStdIn.isEmpty()) {
+            BinaryStdOut.write(encoder.encode(BinaryStdIn.readChar()));
+        }
+        BinaryStdOut.close();
+    }
 
     // apply move-to-front decoding, reading from standard input and writing to standard output
-    public static void decode() {}
+    public static void decode() {
+        MoveToFrontDecoder decoder = new MoveToFrontDecoder();
+        while(!BinaryStdIn.isEmpty()) {
+            BinaryStdOut.write(decoder.decode(BinaryStdIn.readChar()));
+        }
+        BinaryStdOut.close();
+    }
 
     // if args[0] is "-", apply move-to-front encoding
     // if args[0] is "+", apply move-to-front decoding
-    public static void main(String[] args) {}
+    public static void main(String[] args) {
+        if (args[0].equals("-")) encode();
+        if (args[0].equals("+")) decode();
+    }
 }
