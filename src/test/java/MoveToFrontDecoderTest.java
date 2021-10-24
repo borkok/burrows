@@ -12,34 +12,26 @@ class MoveToFrontDecoderTest {
     private static Stream<Arguments> paramsDe() {
         return Stream.of(
                 Arguments.of(new Character[]{0x41}, "A")
-/*
                 ,Arguments.of(new Character[]{0x41, 0x00}, "AA")
                 ,Arguments.of(new Character[]{
                         0x41, 0x42, 0x52, 0x02, 0x44, 0x01, 0x45, 0x01, 0x04, 0x04, 0x02, 0x26
                 }, "ABRACADABRA!")
-*/
         );
     }
 
     @ParameterizedTest
     @MethodSource("paramsDe")
     public void decode(Character[] input, String expected) {
-        MoveToFrontEncoder testee = new MoveToFrontEncoder();
+        MoveToFrontDecoder testee = new MoveToFrontDecoder();
         StringBuilder result = new StringBuilder();
         for (char c : input) {
-            result.append(testee.encode(c));
+            result.append(testee.decode(c));
         }
 
         String expectedByteString = makeByteString(expected);
         String actualByteString = makeByteString(result.toString());
         assertThat(actualByteString)
                 .isEqualTo(expectedByteString);
-    }
-
-    private String makeByteString(Character[] result) {
-        return Arrays.stream(result)
-                .map(c -> Integer.toHexString((int) c))
-                .collect(Collectors.joining(", "));
     }
 
     private String makeByteString(String result) {

@@ -7,16 +7,25 @@ public class MoveToFrontDecoder {
         }
     }
 
-    public char decode(char in) {
-        return in;
-/*
-        char oldCode = letters[in];
-        letters[in] = 0; //new encode, put to front
+    public char decode(char code) {
+        int oldLetter = -1;
+        // check simple
+        if (letters[code] == code)  {
+            oldLetter = code;
+        } else {
+            // search for code
+            for (char i = 0; i < 256; i++) {
+                if (letters[i] == code) {
+                    oldLetter = i;
+                    break;
+                }
+            }
+        }
+        letters[oldLetter] = 0; //new encode, put to front
         for (char i = 0; i < 256; i++) {
             //move the ones that were before 'in' to the right
-            if (letters[i] < oldCode && i != in)  letters[i]++;
+            if (letters[i] < code && i != oldLetter)  letters[i]++;
         }
-        return oldCode;
-*/
+        return (char) oldLetter;
     }
 }
