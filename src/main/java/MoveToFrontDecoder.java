@@ -8,24 +8,25 @@ public class MoveToFrontDecoder {
     }
 
     public char decode(char code) {
-        int oldLetter = -1;
+        int theLetter = findLetter(code);
+        letters[theLetter] = 0; //new code, put to front
+        for (char letter = 0; letter < 256; letter++) {
+            //move to the right letters that were before 'letter'
+            if (letters[letter] < code && letter != theLetter)  letters[letter]++;
+        }
+        return (char) theLetter;
+    }
+
+    private int findLetter(char code) {
         // check simple
-        if (letters[code] == code)  {
-            oldLetter = code;
-        } else {
-            // search for code
-            for (char i = 0; i < 256; i++) {
-                if (letters[i] == code) {
-                    oldLetter = i;
-                    break;
-                }
-            }
+        if (letters[code] == code) return code;
+
+        // search for code
+        for (char letter = 0; letter < 256; letter++) {
+            if (letters[letter] == code) return letter;
         }
-        letters[oldLetter] = 0; //new encode, put to front
-        for (char i = 0; i < 256; i++) {
-            //move the ones that were before 'in' to the right
-            if (letters[i] < code && i != oldLetter)  letters[i]++;
-        }
-        return (char) oldLetter;
+
+        // should never happen
+        return -1;
     }
 }
