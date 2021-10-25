@@ -1,13 +1,23 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class BurrowsWheelerInverter {
+    private final int R = 256;
+    private final int N;
+    private final char[] firstColumn;
+    private final CountWithIndices[] charCountsWithIndices;
+
     private final String result;
 
-    private char[] firstColumn;
-    private final String lastColumn;
-
     public BurrowsWheelerInverter(int first, String transformed) {
-        lastColumn = transformed;
+        N = transformed.length();
+        firstColumn = new char[N];
 
-        sortLastColumnIntoFirstColumn();
+        charCountsWithIndices = new CountWithIndices[R+1];
+        for (int r = 0; r <= R; r++) {
+            charCountsWithIndices[r] = new CountWithIndices();
+        }
+        keyIndexedSort(transformed);
 
         StringBuilder sb = new StringBuilder();
         int index = first;
@@ -26,40 +36,35 @@ public class BurrowsWheelerInverter {
      */
     int next(int i) {
         char c = firstColumn[i];
-        int count = 1;
-        for (int j = i - 1; j >= 0 && firstColumn[j] == c; j--) {
-            count++;
-        }
+        int orderNumber = charAtIndexOrderNumber(i, c);
+        return charCountsWithIndices[c].indices.get(orderNumber);
+    }
 
-        for (int j = 0; j < lastColumn.length(); j++) {
-            if (lastColumn.charAt(j) == c) {
-                if (count == 1) return j;
-                count--;
-            }
-        }
-        throw new IllegalStateException();
+    private int charAtIndexOrderNumber(int index, char c) {
+        return c == 0 ? index : index - charCountsWithIndices[c - 1].count;
     }
 
     public String getResult() {
         return result;
     }
 
-    private void sortLastColumnIntoFirstColumn() {
-        int N = lastColumn.length();
-        int R = 256;
-        int[] count = new int[R+1];
-        firstColumn = new char[N];
-
+    private void keyIndexedSort(String lastColumn) {
         for (int i = 0; i < N; i++) {
-            count[lastColumn.charAt(i)+1]++;
+            charCountsWithIndices[lastColumn.charAt(i)+1].count++;
         }
 
         for (int r = 0; r < R; r++) {
-            count[r+1] += count[r];
+            charCountsWithIndices[r+1].count += charCountsWithIndices[r].count;
         }
 
         for (int i = 0; i < N; i++) {
-            firstColumn[count[lastColumn.charAt(i)]++] = lastColumn.charAt(i);
+            firstColumn[charCountsWithIndices[lastColumn.charAt(i)].count++] = lastColumn.charAt(i);
+            charCountsWithIndices[lastColumn.charAt(i)].indices.add(i);
         }
+    }
+
+    private static class CountWithIndices {
+        int count;
+        List<Integer> indices = new ArrayList<>();
     }
 }
