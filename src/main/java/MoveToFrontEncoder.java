@@ -1,4 +1,5 @@
 public class MoveToFrontEncoder {
+    // index is code, value is letter
     private final char[] letters = new char[256];
 
     public MoveToFrontEncoder() {
@@ -8,12 +9,17 @@ public class MoveToFrontEncoder {
     }
 
     public char encode(char theLetter) {
-        char code = letters[theLetter];
-        letters[theLetter] = 0; //new code, put to front
-        for (char letter = 0; letter < 256; letter++) {
-            //move letters that were before 'theLetter' to the right
-            if (letters[letter] < code && letter != theLetter)  letters[letter]++;
-        }
+        char code = findCode(theLetter);
+        ArrayRotator.rotateRight(letters, code);
         return code;
+    }
+
+    private char findCode(char theLetter) {
+        if (letters[theLetter] == theLetter) return theLetter;
+        for (char i = 0; i < 256; i++) {
+            if (letters[i] == theLetter) return i;
+        }
+        //should never happen
+        throw new IllegalStateException();
     }
 }
