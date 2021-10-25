@@ -1,16 +1,13 @@
-import java.util.Arrays;
-
 public class BurrowsWheelerInverter {
     private final String result;
 
-    private final char[] firstColumn;
+    private char[] firstColumn;
     private final String lastColumn;
 
     public BurrowsWheelerInverter(int first, String transformed) {
         lastColumn = transformed;
 
-        firstColumn = transformed.toCharArray();
-        Arrays.sort(firstColumn);
+        sortLastColumnIntoFirstColumn();
 
         StringBuilder sb = new StringBuilder();
         int index = first;
@@ -45,5 +42,24 @@ public class BurrowsWheelerInverter {
 
     public String getResult() {
         return result;
+    }
+
+    private void sortLastColumnIntoFirstColumn() {
+        int N = lastColumn.length();
+        int R = 256;
+        int[] count = new int[R+1];
+        firstColumn = new char[N];
+
+        for (int i = 0; i < N; i++) {
+            count[lastColumn.charAt(i)+1]++;
+        }
+
+        for (int r = 0; r < R; r++) {
+            count[r+1] += count[r];
+        }
+
+        for (int i = 0; i < N; i++) {
+            firstColumn[count[lastColumn.charAt(i)]++] = lastColumn.charAt(i);
+        }
     }
 }
