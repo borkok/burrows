@@ -5,20 +5,24 @@ public class BurrowsWheelerInverter {
     private final int R = 256;
     private final int N;
     private final char[] firstColumn;
-    private final CountWithIndices[] charCountsWithIndices;
+    private final CountWithIndices[] lastColumnCharsCountWithIndices;
 
-    private final String result;
+    private String result;
 
-    public BurrowsWheelerInverter(int first, String transformed) {
-        N = transformed.length();
+    public BurrowsWheelerInverter(int first, String lastColumn) {
+        N = lastColumn.length();
         firstColumn = new char[N];
 
-        charCountsWithIndices = new CountWithIndices[R+1];
+        lastColumnCharsCountWithIndices = new CountWithIndices[R+1];
         for (int r = 0; r <= R; r++) {
-            charCountsWithIndices[r] = new CountWithIndices();
+            lastColumnCharsCountWithIndices[r] = new CountWithIndices();
         }
-        keyIndexedSort(transformed);
 
+        buildFirstColumn(lastColumn);
+        buildResult(first);
+    }
+
+    private void buildResult(int first) {
         StringBuilder sb = new StringBuilder();
         int index = first;
         for (int i = 0; i < firstColumn.length; i++) {
@@ -37,29 +41,30 @@ public class BurrowsWheelerInverter {
     int next(int i) {
         char c = firstColumn[i];
         int orderNumber = charAtIndexOrderNumber(i, c);
-        return charCountsWithIndices[c].indices.get(orderNumber);
+        return lastColumnCharsCountWithIndices[c].indices.get(orderNumber);
     }
 
     private int charAtIndexOrderNumber(int index, char c) {
-        return c == 0 ? index : index - charCountsWithIndices[c - 1].count;
+        return c == 0 ? index : index - lastColumnCharsCountWithIndices[c - 1].count;
     }
 
     public String getResult() {
         return result;
     }
 
-    private void keyIndexedSort(String lastColumn) {
+    // key-indexed counting sort + storing indices of each char in last column
+    private void buildFirstColumn(String lastColumn) {
         for (int i = 0; i < N; i++) {
-            charCountsWithIndices[lastColumn.charAt(i)+1].count++;
+            lastColumnCharsCountWithIndices[lastColumn.charAt(i)+1].count++;
         }
 
         for (int r = 0; r < R; r++) {
-            charCountsWithIndices[r+1].count += charCountsWithIndices[r].count;
+            lastColumnCharsCountWithIndices[r+1].count += lastColumnCharsCountWithIndices[r].count;
         }
 
         for (int i = 0; i < N; i++) {
-            firstColumn[charCountsWithIndices[lastColumn.charAt(i)].count++] = lastColumn.charAt(i);
-            charCountsWithIndices[lastColumn.charAt(i)].indices.add(i);
+            firstColumn[lastColumnCharsCountWithIndices[lastColumn.charAt(i)].count++] = lastColumn.charAt(i);
+            lastColumnCharsCountWithIndices[lastColumn.charAt(i)].indices.add(i);
         }
     }
 
